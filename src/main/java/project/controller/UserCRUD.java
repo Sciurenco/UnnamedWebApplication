@@ -16,6 +16,7 @@ public class UserCRUD {
 
     private final UserModel USER_MODEL;
     SessionFactory sessionFactory = null;
+    String registrationStatus = "Complete the registration form please";
 
     @Autowired
     public UserCRUD(UserModel USER_MODEL) {
@@ -26,16 +27,26 @@ public class UserCRUD {
     public String createUserAccountForm(Model model) {
 
         model.addAttribute("userRegistration", USER_MODEL);
-
+        model.addAttribute("registrationStatus", registrationStatus);
         return "/WEB-INF/views/user_registration.jsp";
+
     }
 
     @PostMapping("/registration")
-    public String createUserAccountProcess(@ModelAttribute("userRegistration") UserModel userModel) {
+    public String createUserAccountProcess(@ModelAttribute("userRegistration") UserModel userModel, Model model) {
 
         try {
             sessionFactory = new Configuration().configure().buildSessionFactory();
             UserDAO<UserModel, String> userDAO = new UserDAOImpl(sessionFactory);
+
+            Query query = sessionFactory.openSession().createSQLQuery("SELECT login FROM user");
+            String loginListTmp = query.list().toString();
+            boolean checkLoginExistTmp = loginListTmp.contains(userModel.getUserLogin());
+
+            if (checkLoginExistTmp) {
+                registrationStatus = "Login is empty or already exist, choose another login please";
+                return "redirect:/registration";
+            }
 
             userDAO.create(userModel);
 

@@ -10,6 +10,9 @@
 
 <h1>Registration</h1>
 
+<h3>
+    <p>Registration status: ${registrationStatus}</p>
+</h3>
 <%--@elvariable id="userRegistration" type="java"--%>
 <form:form  modelAttribute="userRegistration" method="post">
     <label>Login</label><form:input path="userLogin" type="text" name="login" minlength="4" maxlength="30" pattern="^[a-zA-Z]+$"/><br>
@@ -20,6 +23,5 @@
     <label>City</label><form:input path="userCity" type="text" name="city" maxlength="25" pattern="^[a-zA-Z]+$"/><br>
     <input type="submit" value="send"/>
 </form:form>
-
 </body>
 </html>
