@@ -33,7 +33,7 @@ public class UserCRUD {
     }
 
     @PostMapping("/registration")
-    public String createUserAccountProcess(@ModelAttribute("userRegistration") UserModel userModel, Model model) {
+    public String createUserAccountProcess(@ModelAttribute("userRegistration") UserModel userModel) {
 
         try {
             sessionFactory = new Configuration().configure().buildSessionFactory();
@@ -83,6 +83,9 @@ public class UserCRUD {
 
     @GetMapping("/read/delete/{userLogin}")
     public String deleteUserAccountButton(@PathVariable String userLogin){
+
+        registrationStatus = "Your account has been successfully deleted, " +
+                "you can complete the registration form again";
 
         try {
             sessionFactory = new Configuration().configure().buildSessionFactory();
