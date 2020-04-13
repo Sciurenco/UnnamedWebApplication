@@ -8,5 +8,6 @@
 <h1>Main page</h1>
 
 <p><a href="registration"><button>Registration</button></a></p>
+<p><a href="authorization"><button>Authorization</button></a></p>
 </body>
 </html>
