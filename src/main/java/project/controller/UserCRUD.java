@@ -35,29 +35,36 @@ public class UserCRUD {
     @PostMapping("/registration")
     public String createUserAccountProcess(@ModelAttribute("userRegistration") UserModel userModel) {
 
-        try {
-            sessionFactory = new Configuration().configure().buildSessionFactory();
-            UserDAO<UserModel, String> userDAO = new UserDAOImpl(sessionFactory);
+        if (userModel.getUserLogin().isEmpty() || userModel.getUserPassword().isEmpty())  {
 
-            Query query = sessionFactory.openSession().createSQLQuery("SELECT login FROM user");
-            String loginListTmp = query.list().toString();
-            boolean checkLoginExistTmp = loginListTmp.contains(userModel.getUserLogin());
+            registrationStatus = "Your login or password is empty";
+            return "redirect:/registration";
 
-            if (checkLoginExistTmp) {
-                registrationStatus = "Login is empty or already exist, choose another login please";
-                return "redirect:/registration";
+        } else {
+            try {
+                sessionFactory = new Configuration().configure().buildSessionFactory();
+                UserDAO<UserModel, String> userDAO = new UserDAOImpl(sessionFactory);
+
+                Query query = sessionFactory.openSession().createSQLQuery("SELECT login FROM user");
+                String loginListTmp = query.list().toString();
+                boolean checkLoginExistTmp = loginListTmp.contains(userModel.getUserLogin());
+
+                if (checkLoginExistTmp) {
+                    registrationStatus = "This login already exist, choose another login please";
+                    return "redirect:/registration";
+                }
+
+                userDAO.create(userModel);
+
+            } finally {
+                if (sessionFactory != null) {
+                    sessionFactory.close();
+                }
             }
 
-            userDAO.create(userModel);
-
-        } finally {
-            if (sessionFactory != null) {
-                sessionFactory.close();
-            }
+            String redirectRegistrationUrl = userModel.getUserLogin();
+            return "redirect:/read/" + redirectRegistrationUrl;
         }
-
-        String redirectRegistrationUrl = userModel.getUserLogin();
-        return "redirect:/read/"+redirectRegistrationUrl;
     }
 
     @GetMapping("read/{userLogin}")

@@ -38,29 +38,36 @@ public class UserAuthorization {
     @PostMapping
     public String authorizationUserProcess(@ModelAttribute("userAuthorization") UserModel userModel) {
 
-        try {
-            sessionFactory = new Configuration().configure().buildSessionFactory();
-            UserDAO<UserModel, String> userDAO = new UserDAOImpl(sessionFactory);
+        if (userModel.getUserLogin().isEmpty() || userModel.getUserPassword().isEmpty())  {
 
-            Query query = sessionFactory.openSession().createSQLQuery("SELECT login FROM user");
-            String loginListTmp = query.list().toString();
-            boolean checkLoginExistTmp = loginListTmp.contains(userModel.getUserLogin());
-            String checkPasswordCorrectTmp = userDAO.read(userModel.getUserLogin()).toString();
+            authorizationStatus = "Your login or password is empty";
+            return "redirect:/authorization";
 
-            if (!checkLoginExistTmp ||
-                    !checkPasswordCorrectTmp.contains(userModel.getUserPassword())) {
+        } else {
+            try {
+                sessionFactory = new Configuration().configure().buildSessionFactory();
+                UserDAO<UserModel, String> userDAO = new UserDAOImpl(sessionFactory);
 
-                authorizationStatus = "Login or password are wrong, try again";
-                return "redirect:/authorization";
+                Query query = sessionFactory.openSession().createSQLQuery("SELECT login FROM user");
+                String loginListTmp = query.list().toString();
+                boolean checkLoginExistTmp = loginListTmp.contains(userModel.getUserLogin());
+                String checkPasswordCorrectTmp = userDAO.read(userModel.getUserLogin()).toString();
+
+                if (!checkLoginExistTmp ||
+                        !checkPasswordCorrectTmp.contains(userModel.getUserPassword())) {
+
+                    authorizationStatus = "Login or password are wrong, try again";
+                    return "redirect:/authorization";
+                }
+
+            } finally {
+                if (sessionFactory != null) {
+                    sessionFactory.close();
+                }
             }
 
-        }finally {
-            if (sessionFactory != null) {
-                sessionFactory.close();
-            }
+            String redirectAuthorizationUrl = userModel.getUserLogin();
+            return "redirect:/read/" + redirectAuthorizationUrl;
         }
-
-        String redirectAuthorizationUrl = userModel.getUserLogin();
-        return "redirect:/read/"+redirectAuthorizationUrl;
     }
 }
