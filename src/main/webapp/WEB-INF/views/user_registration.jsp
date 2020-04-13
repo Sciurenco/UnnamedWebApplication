@@ -15,7 +15,7 @@
 </h3>
 <%--@elvariable id="userRegistration" type="java"--%>
 <form:form  modelAttribute="userRegistration" method="post">
-    <label>Login</label><form:input path="userLogin" type="text" name="login" minlength="4" maxlength="30" pattern="^[a-zA-Z]+$"/><br>
+    <label>Login</label><form:input path="userLogin" type="text" name="login" minlength="4" maxlength="30" pattern="^[a-zA-Z0-9]+$"/><br>
     <label>Password</label><form:input path="userPassword" type="password" name="password" minlength="4" maxlength="30" pattern="^[a-zA-Z0-9]+$"/><br>
     <label>Surname</label><form:input path="userSurname" type="text" name="surname" maxlength="30" pattern="^[a-zA-Z]+$"/><br>
     <label>Name</label><form:input path="userName" type="text" name="name" maxlength="30" pattern="^[a-zA-Z]+$"/><br>
