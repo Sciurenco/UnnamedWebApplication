@@ -2,13 +2,28 @@ package project.model;
 
 import org.springframework.stereotype.Component;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 @Component
+@Entity
+@Table(name = "user")
 public class UserModel {
+
+    @Id
+    @Column(name = "login")
     private String userLogin;
+    @Column(name = "password")
     private String userPassword;
+    @Column(name = "name")
     private String userName;
+    @Column(name = "surname")
     private String userSurname;
+    @Column(name = "country")
     private String userCountry;
+    @Column(name = "city")
     private String userCity;
 
     public UserModel(){}
